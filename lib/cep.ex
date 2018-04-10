@@ -4,8 +4,10 @@ defmodule Viacepex.Cep do
   @format "json"
 
   def get(cep) do
-    HTTPoison.get!(@base_url <> "#{cep}/#{@format}/").body
-    |> Poison.decode!
+    case HTTPoison.get(@base_url <> "#{cep}/#{@format}/", [], [timeout: 10_000, recv_timeout: 10_000]) do
+      {:ok, %{body: body}} -> {:ok, Poison.decode!(body)}
+      error -> error
+    end
   end
 
   def validate(cep) do
