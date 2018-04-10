@@ -11,7 +11,10 @@ defmodule Viacepex do
   def get(cep) when is_bitstring(cep) do
     case Viacepex.Cep.validate(cep) do
       :ok ->
-        {:ok, Viacepex.Cep.get(cep) |> one()}
+        case Viacepex.Cep.get(cep) do
+          {:ok, result} -> {:ok, result |> one()}
+          errors -> errors
+        end
       errors ->
         errors
     end
